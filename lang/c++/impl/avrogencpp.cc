@@ -169,7 +169,7 @@ string CodeGen::cppTypeOf(const NodePtr& n)
     case avro::AVRO_MAP:
         return "std::map<std::string, " + cppTypeOf(n->leafAt(1)) + " >";
     case avro::AVRO_FIXED:
-        return "boost::array<uint8_t, " +
+        return "std::array<uint8_t, " +
             lexical_cast<string>(n->fixedSize()) + ">";
     case avro::AVRO_SYMBOLIC:
         return cppTypeOf(resolveSymbol(n));
@@ -717,6 +717,7 @@ void CodeGen::generate(const ValidSchema& schema)
     os_ << "#define " << h << "\n\n\n";
 
     os_ << "#include <sstream>\n"
+        << "#include <array>\n"
         << "#include \"boost/any.hpp\"\n"
         << "#include \"" << includePrefix_ << "Specific.hh\"\n"
         << "#include \"" << includePrefix_ << "Encoder.hh\"\n"
