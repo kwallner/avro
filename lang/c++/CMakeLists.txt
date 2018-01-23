@@ -38,6 +38,7 @@ set (AVRO_VERSION_MINOR "0")
 project (Avro-cpp)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 
+if (NOT CONAN_BASED_BUILD)
 if (WIN32 AND NOT CYGWIN AND NOT MSYS)
 add_definitions (/EHa)
 add_definitions (
@@ -57,7 +58,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     # http://stackoverflow.com/questions/19729036/
     set_source_files_properties(impl/avrogencpp.cc PROPERTIES COMPILE_FLAGS "-U_GLIBCXX_DEBUG")
 endif ()
-
+endif()
 
 find_package (Boost 1.38 REQUIRED
     COMPONENTS filesystem system program_options iostreams)
