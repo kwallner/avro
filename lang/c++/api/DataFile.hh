@@ -29,8 +29,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <array>
 
-#include "boost/array.hpp"
 #include "boost/utility.hpp"
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -51,7 +51,7 @@ enum Codec {
 /**
  * The sync value.
  */
-typedef boost::array<uint8_t, 16> DataFileSync;
+typedef std::array<uint8_t, 16> DataFileSync;
 
 /**
  * Type-independent portion of DataFileWriter.

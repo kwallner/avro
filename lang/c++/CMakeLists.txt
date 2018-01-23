@@ -60,6 +60,13 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif ()
 endif()
 
+if (WIN32)
+add_definitions (
+	-DNOMINMAX)
+endif()
+
+
+
 find_package (Boost 1.38 REQUIRED
     COMPONENTS filesystem system program_options iostreams)
 

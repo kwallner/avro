@@ -40,7 +40,7 @@ using std::vector;
 using std::copy;
 using std::string;
 
-using boost::array;
+using std::array;
 
 namespace {
 const string AVRO_SCHEMA_KEY("avro.schema");

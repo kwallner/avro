@@ -21,6 +21,7 @@
 #include <boost/filesystem.hpp>
 
 #include <sstream>
+#include <array>
 
 #include "DataFile.hh"
 #include "Generic.hh"
@@ -35,7 +36,7 @@ using std::map;
 using std::istringstream;
 using std::ostringstream;
 
-using boost::array;
+using std::array;
 using boost::shared_ptr;
 using boost::unit_test::test_suite;
 

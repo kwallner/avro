@@ -27,8 +27,10 @@
 
 #include <stdint.h>
 #include <vector>
+#include <array>
 #include <stack>
 #include <string>
+#include <limits>
 #include <functional>
 #include <boost/bind.hpp>
 
