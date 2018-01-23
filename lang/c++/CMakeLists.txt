@@ -74,7 +74,7 @@ else (SNAPPY_FOUND)
     message("Disabled snappy codec. libsnappy not found.")
 endif (SNAPPY_FOUND)
 
-find_package(ZLIB OPTIONAL)
+find_package(ZLIB)
 
 add_definitions (${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 
