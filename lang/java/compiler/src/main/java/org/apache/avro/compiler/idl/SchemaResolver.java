@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -94,13 +94,13 @@ final class SchemaResolver {
     final Collection<Schema> types = protocol.getTypes();
     // replace unresolved schemas.
     List<Schema> newSchemas = new ArrayList(types.size());
-    IdentityHashMap<Schema, Schema> replacements = new IdentityHashMap<Schema, Schema>();
+    IdentityHashMap<Schema, Schema> replacements = new IdentityHashMap<>();
     for (Schema schema : types) {
       newSchemas.add(Schemas.visit(schema, new ResolvingVisitor(schema, replacements, new SymbolTable(protocol))));
     }
     result.setTypes(newSchemas); // replace types with resolved ones
 
-    // Resolve all schemas refferenced by protocol Messages.
+    // Resolve all schemas referenced by protocol Messages.
     for (Map.Entry<String, Protocol.Message> entry : protocol.getMessages().entrySet()) {
       Protocol.Message value = entry.getValue();
       Protocol.Message nvalue;
