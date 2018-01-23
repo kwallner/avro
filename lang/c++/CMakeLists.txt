@@ -76,6 +76,20 @@ endif (SNAPPY_FOUND)
 
 find_package(ZLIB)
 
+if (CONAN_DEFINES)
+    # Use modern cmake
+
+    unset(Boost_LIBRARIES)
+    list(APPEND Boost_LIBRARIES Boost::boost)
+    list(APPEND Boost_LIBRARIES Boost::program_options)
+    list(APPEND Boost_LIBRARIES Boost::iostreams)
+    list(APPEND Boost_LIBRARIES Boost::filesystem)
+    list(APPEND Boost_LIBRARIES Boost::system)
+
+    unset(ZLIB_LIBRARIES)
+    list(APPEND ZLIB_LIBRARIES ZLIB::ZLIB)
+endif()
+
 add_definitions (${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 
 include_directories (api ${CMAKE_CURRENT_BINARY_DIR} ${Boost_INCLUDE_DIRS})
@@ -113,11 +127,11 @@ set_target_properties (avrocpp PROPERTIES
 set_target_properties (avrocpp_s PROPERTIES
     VERSION ${AVRO_VERSION_MAJOR}.${AVRO_VERSION_MINOR})
 
-target_link_libraries (avrocpp ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES})
+target_link_libraries (avrocpp ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES} ${ZLIB_LIBRARIES})
 
 add_executable (precompile test/precompile.cc)
 
-target_link_libraries (precompile avrocpp_s ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES})
+target_link_libraries (precompile avrocpp_s ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES} ${ZLIB_LIBRARIES})
 
 macro (gen file ns)
     add_custom_command (OUTPUT ${file}.hh
@@ -152,7 +166,7 @@ enable_testing()
 
 macro (unittest name)
     add_executable (${name} test/${name}.cc)
-    target_link_libraries (${name} avrocpp ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES})
+    target_link_libraries (${name} avrocpp ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES} ${ZLIB_LIBRARIES})
     add_test (NAME ${name} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${name})
 endmacro (unittest)
