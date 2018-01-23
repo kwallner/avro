@@ -38,7 +38,7 @@ set (AVRO_VERSION_MINOR "0")
 project (Avro-cpp)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 
-if (NOT CONAN_BASED_BUILD)
+if (NOT CONAN_DEFINES)
 if (WIN32 AND NOT CYGWIN AND NOT MSYS)
 add_definitions (/EHa)
 add_definitions (
@@ -73,6 +73,8 @@ else (SNAPPY_FOUND)
     set(SNAPPY_LIBRARIES "")
     message("Disabled snappy codec. libsnappy not found.")
 endif (SNAPPY_FOUND)
+
+find_package(ZLIB OPTIONAL)
 
 add_definitions (${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 
@@ -144,7 +146,7 @@ gen (crossref cr)
 gen (primitivetypes pt)
 
 add_executable (avrogencpp impl/avrogencpp.cc)
-target_link_libraries (avrogencpp avrocpp_s ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES})
+target_link_libraries (avrogencpp avrocpp_s ${Boost_LIBRARIES} ${SNAPPY_LIBRARIES} ${ZLIB_LIBRARIES})
 
 enable_testing()
 
