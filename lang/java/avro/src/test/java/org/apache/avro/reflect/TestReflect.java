@@ -17,9 +17,7 @@
  */
 package org.apache.avro.reflect;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,19 +25,9 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
-import org.apache.avro.AvroRuntimeException;
-import org.apache.avro.AvroTypeException;
-import org.apache.avro.Protocol;
-import org.apache.avro.Schema;
-import org.apache.avro.SchemaBuilder;
+import org.apache.avro.*;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.io.Decoder;
@@ -47,7 +35,6 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.reflect.TestReflect.SampleRecord.AnotherSampleRecord;
-import org.codehaus.jackson.node.NullNode;
 import org.junit.Test;
 
 public class TestReflect {
@@ -134,7 +121,7 @@ public class TestReflect {
   @Test public void testUnionWithEnum() {
     Schema s = new Schema.Parser().parse
         ("[\"null\", {\"type\":\"enum\",\"name\":\"E\",\"namespace\":" +
-            "\"org.apache.avro.reflect.TestReflect$\",\"symbols\":[\"A\",\"B\"]}]");
+            "\"org.apache.avro.reflect.TestReflect\",\"symbols\":[\"A\",\"B\"]}]");
     GenericData data = ReflectData.get();
     assertEquals(1, data.resolveUnion(s, E.A));
   }
@@ -324,7 +311,7 @@ public class TestReflect {
     r9_1.value = r8;
     checkReadWrite(r9_1, ReflectData.get().getSchema(R9_1.class));
   }
-  
+
   // test union annotation on methods and parameters
   public static interface P0 {
     @Union({Void.class,String.class})
@@ -388,7 +375,7 @@ public class TestReflect {
     Schema r11Record = ReflectData.get().getSchema(R11.class);
     assertEquals(Schema.Type.RECORD, r11Record.getType());
     Field r11Field = r11Record.getField("text");
-    assertEquals(NullNode.getInstance(), r11Field.defaultValue());
+    assertEquals(JsonProperties.NULL_VALUE, r11Field.defaultVal());
     Schema r11FieldSchema = r11Field.schema();
     assertEquals(Schema.Type.UNION, r11FieldSchema.getType());
     assertEquals(Schema.Type.NULL, r11FieldSchema.getTypes().get(0).getType());
@@ -525,13 +512,13 @@ public class TestReflect {
   public static enum E { A, B };
   @Test public void testEnum() throws Exception {
     check(E.class, "{\"type\":\"enum\",\"name\":\"E\",\"namespace\":"
-          +"\"org.apache.avro.reflect.TestReflect$\",\"symbols\":[\"A\",\"B\"]}");
+          +"\"org.apache.avro.reflect.TestReflect\",\"symbols\":[\"A\",\"B\"]}");
   }
 
   public static class R { int a; long b; }
   @Test public void testRecord() throws Exception {
     check(R.class, "{\"type\":\"record\",\"name\":\"R\",\"namespace\":"
-          +"\"org.apache.avro.reflect.TestReflect$\",\"fields\":["
+          +"\"org.apache.avro.reflect.TestReflect\",\"fields\":["
           +"{\"name\":\"a\",\"type\":\"int\"},"
           +"{\"name\":\"b\",\"type\":\"long\"}]}");
   }
@@ -539,20 +526,20 @@ public class TestReflect {
   public static class RAvroIgnore { @AvroIgnore int a; }
   @Test public void testAnnotationAvroIgnore() throws Exception {
     check(RAvroIgnore.class, "{\"type\":\"record\",\"name\":\"RAvroIgnore\",\"namespace\":"
-          +"\"org.apache.avro.reflect.TestReflect$\",\"fields\":[]}");
+          +"\"org.apache.avro.reflect.TestReflect\",\"fields\":[]}");
   }
 
   public static class RAvroMeta { @AvroMeta(key="K", value="V") int a; }
   @Test public void testAnnotationAvroMeta() throws Exception {
     check(RAvroMeta.class, "{\"type\":\"record\",\"name\":\"RAvroMeta\",\"namespace\":"
-          +"\"org.apache.avro.reflect.TestReflect$\",\"fields\":["
+          +"\"org.apache.avro.reflect.TestReflect\",\"fields\":["
           +"{\"name\":\"a\",\"type\":\"int\",\"K\":\"V\"}]}");
   }
 
   public static class RAvroName { @AvroName("b") int a; }
   @Test public void testAnnotationAvroName() throws Exception {
     check(RAvroName.class, "{\"type\":\"record\",\"name\":\"RAvroName\",\"namespace\":"
-          +"\"org.apache.avro.reflect.TestReflect$\",\"fields\":["
+          +"\"org.apache.avro.reflect.TestReflect\",\"fields\":["
           +"{\"name\":\"b\",\"type\":\"int\"}]}");
   }
 
@@ -560,7 +547,7 @@ public class TestReflect {
   @Test(expected=Exception.class)
   public void testAnnotationAvroNameCollide() throws Exception {
     check(RAvroNameCollide.class, "{\"type\":\"record\",\"name\":\"RAvroNameCollide\",\"namespace\":"
-          +"\"org.apache.avro.reflect.TestReflect$\",\"fields\":["
+          +"\"org.apache.avro.reflect.TestReflect\",\"fields\":["
           +"{\"name\":\"b\",\"type\":\"int\"},"
           +"{\"name\":\"b\",\"type\":\"int\"}]}");
   }
@@ -568,7 +555,7 @@ public class TestReflect {
   public static class RAvroStringableField { @Stringable int a; }
   public void testAnnotationAvroStringableFields() throws Exception {
     check(RAvroStringableField.class, "{\"type\":\"record\",\"name\":\"RAvroNameCollide\",\"namespace\":"
-          +"\"org.apache.avro.reflect.TestReflect$\",\"fields\":["
+          +"\"org.apache.avro.reflect.TestReflect\",\"fields\":["
           +"{\"name\":\"a\",\"type\":\"String\"}]}");
   }
 
@@ -579,7 +566,7 @@ public class TestReflect {
     check(o.getClass(), schemaJson);
   }
 
-  private void check(Type type, String schemaJson) {
+  private void check(java.lang.reflect.Type type, String schemaJson) {
     assertEquals(schemaJson, ReflectData.get().getSchema(type).toString());
   }
 
@@ -703,7 +690,7 @@ public class TestReflect {
   public void testAvroEncodeInducing() throws IOException {
     Schema schm = ReflectData.get().getSchema(AvroEncRecord.class);
     assertEquals(schm.toString(), "{\"type\":\"record\",\"name\":\"AvroEncRecord\",\"namespace" +
-      "\":\"org.apache.avro.reflect.TestReflect$\",\"fields\":[{\"name\":\"date\"," +
+      "\":\"org.apache.avro.reflect.TestReflect\",\"fields\":[{\"name\":\"date\"," +
       "\"type\":{\"type\":\"long\",\"CustomEncoding\":\"DateAsLongEncoding\"}}]}");
   }
 
@@ -752,7 +739,8 @@ public class TestReflect {
     String saved = System.getProperty("avro.disable.unsafe");
     try {
       System.setProperty("avro.disable.unsafe", "true");
-      ReflectData.ACCESSOR_CACHE.clear();
+      ReflectData.ACCESSOR_CACHE.remove(multipleAnnotationRecord.class);
+      ReflectData.ACCESSOR_CACHE.remove(AnotherSampleRecord.class);
       ReflectionUtil.resetFieldAccess();
       testMultipleAnnotations();
       testRecordWithNullIO();
@@ -761,7 +749,8 @@ public class TestReflect {
         System.clearProperty("avro.disable.unsafe");
       else
         System.setProperty("avro.disable.unsafe", saved);
-      ReflectData.ACCESSOR_CACHE.clear();
+      ReflectData.ACCESSOR_CACHE.remove(multipleAnnotationRecord.class);
+      ReflectData.ACCESSOR_CACHE.remove(AnotherSampleRecord.class);
       ReflectionUtil.resetFieldAccess();
     }
   }
@@ -1059,9 +1048,19 @@ public class TestReflect {
 
   @Test
   public void testAvroAliasOnClass() {
-    check(AliasA.class, "{\"type\":\"record\",\"name\":\"AliasA\",\"namespace\":\"org.apache.avro.reflect.TestReflect$\",\"fields\":[],\"aliases\":[\"b.a\"]}");
-    check(AliasB.class, "{\"type\":\"record\",\"name\":\"AliasB\",\"namespace\":\"org.apache.avro.reflect.TestReflect$\",\"fields\":[],\"aliases\":[\"a\"]}");
-    check(AliasC.class, "{\"type\":\"record\",\"name\":\"AliasC\",\"namespace\":\"org.apache.avro.reflect.TestReflect$\",\"fields\":[],\"aliases\":[\"a\"]}");
+    check(AliasA.class, "{\"type\":\"record\",\"name\":\"AliasA\",\"namespace\":\"org.apache.avro.reflect.TestReflect\",\"fields\":[],\"aliases\":[\"b.a\"]}");
+    check(AliasB.class, "{\"type\":\"record\",\"name\":\"AliasB\",\"namespace\":\"org.apache.avro.reflect.TestReflect\",\"fields\":[],\"aliases\":[\"a\"]}");
+    check(AliasC.class, "{\"type\":\"record\",\"name\":\"AliasC\",\"namespace\":\"org.apache.avro.reflect.TestReflect\",\"fields\":[],\"aliases\":[\"a\"]}");
+  }
+
+  private static class Z {}
+
+  @Test public void testDollarTerminatedNamespaceCompatibility() {
+    ReflectData data = ReflectData.get();
+    Schema s = new Schema.Parser().parse
+      ("{\"type\":\"record\",\"name\":\"Z\",\"namespace\":\"org.apache.avro.reflect.TestReflect$\",\"fields\":[]}");
+    assertEquals(data.getSchema(data.getClass(s)).toString(),
+       "{\"type\":\"record\",\"name\":\"Z\",\"namespace\":\"org.apache.avro.reflect.TestReflect\",\"fields\":[]}");
   }
 
   private static class ClassWithAliasOnField {
@@ -1078,7 +1077,7 @@ public class TestReflect {
   public void testAvroAliasOnField() {
 
     Schema expectedSchema = SchemaBuilder.record(ClassWithAliasOnField.class.getSimpleName())
-        .namespace("org.apache.avro.reflect.TestReflect$").fields().name("primitiveField").aliases("aliasName")
+        .namespace("org.apache.avro.reflect.TestReflect").fields().name("primitiveField").aliases("aliasName")
         .type(Schema.create(org.apache.avro.Schema.Type.INT)).noDefault().endRecord();
 
     check(ClassWithAliasOnField.class, expectedSchema.toString());
@@ -1098,7 +1097,7 @@ public class TestReflect {
   public void testAvroDefault() {
     check(DefaultTest.class,
           "{\"type\":\"record\",\"name\":\"DefaultTest\","
-          +"\"namespace\":\"org.apache.avro.reflect.TestReflect$\",\"fields\":["
+          +"\"namespace\":\"org.apache.avro.reflect.TestReflect\",\"fields\":["
           +"{\"name\":\"foo\",\"type\":\"int\",\"default\":1}]}");
   }
 

@@ -25,12 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import org.apache.avro.Conversion;
-import org.apache.avro.Conversions;
-import org.apache.avro.LogicalType;
-import org.apache.avro.LogicalTypes;
-import org.apache.avro.Schema;
-import org.apache.avro.SchemaBuilder;
+
+import org.apache.avro.*;
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.file.FileReader;
@@ -40,11 +36,7 @@ import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.specific.SpecificData;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -120,7 +112,7 @@ public class TestReflectLogicalTypes {
   public void testDecimalBytes() throws IOException {
     Schema schema = REFLECT.getSchema(DecimalRecordBytes.class);
     Assert.assertEquals("Should have the correct record name",
-        "org.apache.avro.reflect.TestReflectLogicalTypes$",
+        "org.apache.avro.reflect.TestReflectLogicalTypes",
         schema.getNamespace());
     Assert.assertEquals("Should have the correct record name",
         "DecimalRecordBytes",
@@ -179,7 +171,7 @@ public class TestReflectLogicalTypes {
   public void testDecimalFixed() throws IOException {
     Schema schema = REFLECT.getSchema(DecimalRecordFixed.class);
     Assert.assertEquals("Should have the correct record name",
-        "org.apache.avro.reflect.TestReflectLogicalTypes$",
+        "org.apache.avro.reflect.TestReflectLogicalTypes",
         schema.getNamespace());
     Assert.assertEquals("Should have the correct record name",
         "DecimalRecordFixed",
@@ -298,7 +290,7 @@ public class TestReflectLogicalTypes {
 
     Schema schema = model.getSchema(PairRecord.class);
     Assert.assertEquals("Should have the correct record name",
-        "org.apache.avro.reflect.TestReflectLogicalTypes$",
+        "org.apache.avro.reflect.TestReflectLogicalTypes",
         schema.getNamespace());
     Assert.assertEquals("Should have the correct record name",
         "PairRecord",

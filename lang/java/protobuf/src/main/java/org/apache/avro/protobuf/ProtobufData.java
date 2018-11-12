@@ -46,10 +46,11 @@ import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.DescriptorProtos.FileOptions;
 
 import org.apache.avro.util.ClassUtils;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.JsonNodeFactory;
+import org.apache.avro.util.internal.Accessor;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 /** Utilities for serializing Protobuf data in Avro format. */
 public class ProtobufData extends GenericData {
@@ -158,10 +159,17 @@ public class ProtobufData extends GenericData {
 
   @Override
   protected Schema getRecordSchema(Object record) {
-    return getSchema(((Message)record).getDescriptorForType());
+    Descriptor descriptor = ((Message)record).getDescriptorForType();
+    Schema schema = schemaCache.get(descriptor);
+
+    if (schema == null) {
+      schema = getSchema(descriptor);
+      schemaCache.put(descriptor, schema);
+    }
+    return schema;
   }
 
-  private final Map<Class,Schema> schemaCache
+  private final Map<Object,Schema> schemaCache
     = new ConcurrentHashMap<>();
 
   /** Return a record schema given a protobuf message class. */
@@ -206,7 +214,7 @@ public class ProtobufData extends GenericData {
 
       List<Field> fields = new ArrayList<>();
       for (FieldDescriptor f : descriptor.getFields())
-        fields.add(new Field(f.getName(), getSchema(f), null, getDefault(f)));
+        fields.add(Accessor.createField(f.getName(), getSchema(f), null, getDefault(f)));
       result.setFields(fields);
       return result;
 
